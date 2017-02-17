@@ -47,7 +47,7 @@
       })(this));
       return $('#hit').on('click', (function(_this) {
         return function() {
-          return _this.addCard();
+          return _this.addMyCard('my');
         };
       })(this));
     },
@@ -56,7 +56,7 @@
       return this.decideMyNumber();
     },
     decideDealerNumber: function() {
-      var dealer_mark1, dealer_mark2, dealer_number1, dealer_number2;
+      var dealer_mark1, dealer_mark2, dealer_number1, dealer_number2, results;
       dealer_mark1 = _.random(1, 4);
       dealer_number1 = _.random(1, 13);
       while (this.check_trump_number[dealer_mark1][dealer_number1] === 1) {
@@ -72,7 +72,12 @@
       }
       this.check_trump_number[dealer_mark2][dealer_number2] = 1;
       this.dealer_number = this.trump_number[dealer_mark1][dealer_number1] + this.trump_number[dealer_mark2][dealer_number2];
-      return console.log(this.dealer_number);
+      console.log(this.dealer_number);
+      results = [];
+      while (this.dealer_number < 16) {
+        results.push(this.addDealerCard());
+      }
+      return results;
     },
     decideMyNumber: function() {
       var my_mark1, my_mark2, my_number1, my_number2;
@@ -93,7 +98,7 @@
       this.my_number = this.trump_number[my_mark1][my_number1] + this.trump_number[my_mark2][my_number2];
       return console.log(this.my_number);
     },
-    addCard: function(additional) {
+    addMyCard: function() {
       var additional_mark, additional_number;
       additional_mark = _.random(1, 4);
       additional_number = _.random(1, 13);
@@ -104,6 +109,18 @@
       this.check_trump_number[additional_mark][additional_number] = 1;
       this.my_number = this.my_number + this.trump_number[additional_mark][additional_number];
       return console.log(this.my_number);
+    },
+    addDealerCard: function() {
+      var additional_mark, additional_number;
+      additional_mark = _.random(1, 4);
+      additional_number = _.random(1, 13);
+      while (this.check_trump_number[additional_mark][additional_number] === 1) {
+        additional_mark = _.random(1, 4);
+        additional_number = _.random(1, 13);
+      }
+      this.check_trump_number[additional_mark][additional_number] = 1;
+      this.dealer_number = this.dealer_number + this.trump_number[additional_mark][additional_number];
+      return console.log(this.dealer_number);
     }
   };
 
