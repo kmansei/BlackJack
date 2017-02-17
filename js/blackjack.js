@@ -10,6 +10,8 @@
       this.setBind();
       this.my_number = 0;
       this.dealer_number = 0;
+      this.my_burst = 0;
+      this.dealer_burst = 0;
       this.trump_number = new Array;
       for (i = k = 1; k <= 4; i = ++k) {
         this.trump_number[i] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
@@ -45,9 +47,14 @@
           return _this.dealCard();
         };
       })(this));
-      return $('#hit').on('click', (function(_this) {
+      $('#hit').on('click', (function(_this) {
         return function() {
           return _this.addMyCard('my');
+        };
+      })(this));
+      return $('#stay').on('click', (function(_this) {
+        return function() {
+          return _this.battle(_this.dealer_number, _this.my_number);
         };
       })(this));
     },
@@ -108,6 +115,9 @@
       }
       this.check_trump_number[additional_mark][additional_number] = 1;
       this.my_number = this.my_number + this.trump_number[additional_mark][additional_number];
+      if (this.my_number > 21) {
+        this.my_burst = 1;
+      }
       return console.log(this.my_number);
     },
     addDealerCard: function() {
@@ -120,7 +130,25 @@
       }
       this.check_trump_number[additional_mark][additional_number] = 1;
       this.dealer_number = this.dealer_number + this.trump_number[additional_mark][additional_number];
-      return console.log(this.dealer_number);
+      console.log(this.dealer_number);
+      if (this.dealer_number > 21) {
+        return this.dealer_burst = 1;
+      }
+    },
+    battle: function(dealer_number, mynumber) {
+      if (this.dealer_burst === 1 && this.my_burst === 1) {
+        return console.log('あなたの負けです！');
+      } else if (this.dealer_burst === 1) {
+        return console.log('あなたの勝ちです！');
+      } else if (this.my_burst === 1) {
+        return console.log('あなたの負けです！');
+      } else if (this.dealer_number === this.my_number) {
+        return console.log('引き分けです。');
+      } else if (this.dealer_number > this.my_number) {
+        return console.log('あなたの負けです！');
+      } else {
+        return console.log('あなたの勝ちです！');
+      }
     }
   };
 

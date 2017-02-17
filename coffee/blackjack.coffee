@@ -7,6 +7,9 @@ window.app =
 
     @my_number = 0
     @dealer_number = 0
+    @my_burst = 0
+    @dealer_burst = 0
+
     #スペード=1 クローバー=2 ハート=3 ダイヤ=4
     @trump_number = new Array
     for i in [1..4]
@@ -33,6 +36,8 @@ window.app =
       @dealCard()
     $('#hit').on 'click', =>
       @addMyCard 'my'
+    $('#stay').on 'click', =>
+      @battle @dealer_number, @my_number
 
   dealCard: ->
     @decideDealerNumber()
@@ -89,6 +94,8 @@ window.app =
       additional_number = _.random 1, 13
     @check_trump_number[additional_mark][additional_number] = 1
     @my_number = @my_number + @trump_number[additional_mark][additional_number]
+    if @my_number > 21
+      @my_burst = 1
     console.log @my_number
 
   addDealerCard: ->
@@ -100,6 +107,21 @@ window.app =
     @check_trump_number[additional_mark][additional_number] = 1
     @dealer_number = @dealer_number + @trump_number[additional_mark][additional_number]
     console.log @dealer_number
+    if @dealer_number > 21
+      @dealer_burst = 1
 
+  battle: (dealer_number, mynumber)->
+    if @dealer_burst is 1 and @my_burst is 1
+      console.log 'あなたの負けです！'
+    else if @dealer_burst is 1
+      console.log 'あなたの勝ちです！'
+    else if @my_burst is 1
+      console.log 'あなたの負けです！'
+    else if @dealer_number is @my_number
+      console.log '引き分けです。'
+    else if @dealer_number > @my_number
+      console.log 'あなたの負けです！'
+    else
+      console.log 'あなたの勝ちです！'
 
 
