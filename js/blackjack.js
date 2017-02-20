@@ -6,7 +6,7 @@
 
   window.app = {
     initialize: function() {
-      var i, j, k, l, m, n, o, results;
+      var i, j, k, l, m, n, o, p;
       this.setBind();
       this.my_number = 0;
       this.dealer_number = 0;
@@ -30,21 +30,15 @@
         }
       }
       this.check_trump_number = new Array;
-      for (i = n = 1; n <= 4; i = ++n) {
-        this.check_trump_number[i] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+      for (i = n = 0; n <= 4; i = ++n) {
+        this.check_trump_number[i] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
       }
-      results = [];
       for (i = o = 1; o <= 4; i = ++o) {
-        results.push((function() {
-          var p, results1;
-          results1 = [];
-          for (j = p = 1; p <= 13; j = ++p) {
-            results1.push(this.check_trump_number[i][j] = 0);
-          }
-          return results1;
-        }).call(this));
+        for (j = p = 1; p <= 13; j = ++p) {
+          this.check_trump_number[i][j] = 0;
+        }
       }
-      return results;
+      return this.check_trump_number[0][0] = 1;
     },
     setBind: function() {
       $('#duel_start').on('click', (function(_this) {
@@ -58,9 +52,14 @@
           return _this.add_mynumber++;
         };
       })(this));
-      return $('#stay').on('click', (function(_this) {
+      $('#stay').on('click', (function(_this) {
         return function() {
           return _this.battle(_this.dealer_number, _this.my_number);
+        };
+      })(this));
+      return $('#restart').on('click', (function(_this) {
+        return function() {
+          return _this.restart();
         };
       })(this));
     },
@@ -75,8 +74,7 @@
     },
     decideMyNumber: function(who) {
       var mark, number;
-      mark = _.random(1, 4);
-      number = _.random(1, 13);
+      mark = number = 0;
       while (this.check_trump_number[mark][number] === 1) {
         mark = _.random(1, 4);
         number = _.random(1, 13);
@@ -91,8 +89,7 @@
     },
     decideDealerNumber: function(who) {
       var mark, number;
-      mark = _.random(1, 4);
-      number = _.random(1, 13);
+      mark = number = 0;
       while (this.check_trump_number[mark][number] === 1) {
         mark = _.random(1, 4);
         number = _.random(1, 13);
@@ -167,6 +164,32 @@
         console.log('あなたの勝ちです！');
         return $('#win').fadeIn('fast');
       }
+    },
+    restart: function() {
+      var i, j, k, l, m;
+      for (i = k = 1; k <= 4; i = ++k) {
+        for (j = l = 1; l <= 13; j = ++l) {
+          this.check_trump_number[i][j] = 0;
+        }
+      }
+      $('#restart').hide('normal');
+      $('#win').fadeOut('normal');
+      $('#lose').fadeOut('normal');
+      $('#draw').fadeOut('normal');
+      $('.burst2').fadeOut('normal');
+      this.dealer_number = 0;
+      this.my_number = 0;
+      this.add_mynumber = 3;
+      this.add_dealernumber = 3;
+      this.my_burst = 0;
+      this.dealer_burst = 0;
+      for (i = m = 3; m <= 7; i = ++m) {
+        $(".dealer" + i).hide('fast');
+        $(".my" + i).hide('fast');
+      }
+      $('.dealer2').attr('src', 'img/z02.png');
+      $("#hit").prop("disabled", false);
+      return this.duelStart();
     }
   };
 

@@ -30,12 +30,13 @@ window.app =
 
     #確認用
     @check_trump_number = new Array
-    for i in [1..4]
-      @check_trump_number[i] = [1..13]
+    for i in [0..4]
+      @check_trump_number[i] = [0..13]
     #未使用のカードは0 使用したら1
     for i in [1..4]
       for j in [1..13]
         @check_trump_number[i][j] = 0
+    @check_trump_number[0][0] = 1
 
   #クリックした時の動作
   setBind: ->
@@ -46,6 +47,8 @@ window.app =
       @add_mynumber++
     $('#stay').on 'click', =>
       @battle @dealer_number, @my_number
+    $('#restart').on 'click', =>
+      @restart()
 
   #ゲーム開始
   duelStart: ->
@@ -59,8 +62,7 @@ window.app =
 
   #自分の始めのカードを決める
   decideMyNumber: (who)->
-    mark = _.random 1, 4
-    number = _.random 1, 13
+    mark = number = 0
     while @check_trump_number[mark][number] is 1
       mark = _.random 1, 4
       number = _.random 1, 13
@@ -73,8 +75,7 @@ window.app =
 
   #ディーラーの始めのカードを決める
   decideDealerNumber: (who)->
-    mark = _.random 1, 4
-    number = _.random 1, 13
+    mark = number = 0
     while @check_trump_number[mark][number] is 1
       mark = _.random 1, 4
       number = _.random 1, 13
@@ -93,7 +94,6 @@ window.app =
       @my_burst = 1
       $("#hit").prop "disabled", true
       $('.burst1').fadeIn 'fast'
-
     @drawed()
     console.log @my_number
 
@@ -107,6 +107,8 @@ window.app =
     @add_dealernumber++
     @drawed()
     console.log @dealer_number
+
+  #山札からカードを引いたような演出
   drawed: ->
     $('.deck').fadeOut 'fast', =>
       $('.deck').fadeIn 'fast'
@@ -143,4 +145,28 @@ window.app =
     else
       console.log 'あなたの勝ちです！'
       $('#win').fadeIn 'fast'
+
+  #初期化
+  restart: ->
+    #確認用の配列を初期化
+    for i in [1..4]
+      for j in [1..13]
+        @check_trump_number[i][j] = 0
+    $('#restart').hide 'normal'
+    $('#win').fadeOut 'normal'
+    $('#lose').fadeOut 'normal'
+    $('#draw').fadeOut 'normal'
+    $('.burst2').fadeOut 'normal'
+    @dealer_number = 0
+    @my_number = 0
+    @add_mynumber = 3
+    @add_dealernumber = 3
+    @my_burst = 0
+    @dealer_burst = 0
+    for i in [3..7]
+      $(".dealer#{i}").hide 'fast'
+      $(".my#{i}").hide 'fast'
+    $('.dealer2').attr 'src', 'img/z02.png'
+    $("#hit").prop "disabled", false
+    @duelStart()
 
