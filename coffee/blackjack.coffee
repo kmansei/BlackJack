@@ -24,7 +24,7 @@ window.app =
         #1は11として扱う
         if j is 1
           @trump_number[i][j] = 11
-        #10~13の数はブラックジャックでは10と扱う
+        #10~13は10として扱う
         if j >= 10
           @trump_number[i][j] = 10
 
@@ -66,6 +66,8 @@ window.app =
       number = _.random 1, 13
     @check_trump_number[mark][number] = 1
     @my_number = @my_number + @trump_number[mark][number]
+    if number is 1 and @my_number > 21
+      @my_number = @my_number - 10
     $("#my").text @my_number
     $(".#{who}").attr 'src', "img/#{mark}_#{number}.png"
 
@@ -78,6 +80,8 @@ window.app =
       number = _.random 1, 13
     @check_trump_number[mark][number] = 1
     @dealer_number = @dealer_number + @trump_number[mark][number]
+    if number is 1 and @dealer_number > 21
+      @dealer_number = @dealer_number - 10
     $('#dealer').text '?'
     $(".#{who}").attr 'src', "img/#{mark}_#{number}.png"
 
@@ -89,6 +93,7 @@ window.app =
       @my_burst = 1
       $("#hit").prop "disabled", true
       $('.burst1').fadeIn 'fast'
+
     @drawed()
     console.log @my_number
 
@@ -102,12 +107,11 @@ window.app =
     @add_dealernumber++
     @drawed()
     console.log @dealer_number
-
   drawed: ->
     $('.deck').fadeOut 'fast', =>
       $('.deck').fadeIn 'fast'
 
-  #ディーラーがカードを加える
+  #ディーラーがカードを引く
   battle: (dealer_number, mynumber)->
     @decideDealerNumber 'dealer2'
     $('.burst1').fadeOut 'fast'
@@ -139,5 +143,4 @@ window.app =
     else
       console.log 'あなたの勝ちです！'
       $('#win').fadeIn 'fast'
-
 

@@ -83,6 +83,9 @@
       }
       this.check_trump_number[mark][number] = 1;
       this.my_number = this.my_number + this.trump_number[mark][number];
+      if (number === 1 && this.my_number > 21) {
+        this.my_number = this.my_number - 10;
+      }
       $("#my").text(this.my_number);
       return $("." + who).attr('src', "img/" + mark + "_" + number + ".png");
     },
@@ -96,6 +99,9 @@
       }
       this.check_trump_number[mark][number] = 1;
       this.dealer_number = this.dealer_number + this.trump_number[mark][number];
+      if (number === 1 && this.dealer_number > 21) {
+        this.dealer_number = this.dealer_number - 10;
+      }
       $('#dealer').text('?');
       return $("." + who).attr('src', "img/" + mark + "_" + number + ".png");
     },
