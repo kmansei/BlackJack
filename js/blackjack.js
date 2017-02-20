@@ -20,10 +20,10 @@
       }
       for (i = l = 1; l <= 4; i = ++l) {
         for (j = m = 1; m <= 13; j = ++m) {
-          if (i === 1) {
-            this.trump_number[i][j] = i;
-          }
           this.trump_number[i][j] = j;
+          if (j === 1) {
+            this.trump_number[i][j] = 11;
+          }
           if (j >= 10) {
             this.trump_number[i][j] = 10;
           }
@@ -104,7 +104,10 @@
       $("." + who).show('normal');
       if (this.my_number > 21) {
         this.my_burst = 1;
+        $("#hit").prop("disabled", true);
+        $('.burst1').fadeIn('fast');
       }
+      this.drawed();
       return console.log(this.my_number);
     },
     addDealerCard: function() {
@@ -112,13 +115,26 @@
       $(".dealer" + this.add_dealernumber).show('normal');
       if (this.dealer_number > 21) {
         this.dealer_burst = 1;
+        $('.burst2').fadeIn('fast');
       }
       this.add_dealernumber++;
+      this.drawed();
       return console.log(this.dealer_number);
+    },
+    drawed: function() {
+      return $('.deck').fadeOut('fast', (function(_this) {
+        return function() {
+          return $('.deck').fadeIn('fast');
+        };
+      })(this));
     },
     battle: function(dealer_number, mynumber) {
       this.decideDealerNumber('dealer2');
+      $('.burst1').fadeOut('fast');
       while (this.dealer_number < 17) {
+        if (this.my_burst === 1) {
+          break;
+        }
         this.addDealerCard();
       }
       $("#dealer").text(this.dealer_number);

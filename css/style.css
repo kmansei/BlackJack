@@ -60,7 +60,26 @@ h2 {
   left: 600px;
   margin: auto;
   vertical-align: middle;
+}
 
+.burst1{
+  position: absolute;
+  top: 320px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  margin: auto;
+  vertical-align: middle;
+}
+
+.burst2{
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 450px;
+  left: 0px;
+  margin: auto;
+  vertical-align: middle;
 }
 
 #circle {

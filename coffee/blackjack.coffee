@@ -20,9 +20,10 @@ window.app =
     #1~10はそのままの値
     for i in [1..4]
       for j in [1..13]
-        if i is 1
-          @trump_number[i][j] = i
         @trump_number[i][j] = j
+        #1は11として扱う
+        if j is 1
+          @trump_number[i][j] = 11
         #10~13の数はブラックジャックでは10と扱う
         if j >= 10
           @trump_number[i][j] = 10
@@ -86,6 +87,9 @@ window.app =
     $(".#{who}").show 'normal'
     if @my_number > 21
       @my_burst = 1
+      $("#hit").prop "disabled", true
+      $('.burst1').fadeIn 'fast'
+    @drawed()
     console.log @my_number
 
   #ディーラーがカードを引いたときの処理
@@ -94,13 +98,22 @@ window.app =
     $(".dealer#{@add_dealernumber}").show 'normal'
     if @dealer_number > 21
       @dealer_burst = 1
+      $('.burst2').fadeIn 'fast'
     @add_dealernumber++
+    @drawed()
     console.log @dealer_number
+
+  drawed: ->
+    $('.deck').fadeOut 'fast', =>
+      $('.deck').fadeIn 'fast'
 
   #ディーラーがカードを加える
   battle: (dealer_number, mynumber)->
     @decideDealerNumber 'dealer2'
+    $('.burst1').fadeOut 'fast'
     while @dealer_number < 17
+      if @my_burst is 1
+        break
       @addDealerCard()
     $("#dealer").text @dealer_number
     @judge()
