@@ -21,17 +21,36 @@
         </div>
       </div>
     </nav>
-    <div class="center">
-    <img src="img/z01.png" alt="" class="margin_bottom" width="120" height="180">
-    <div class="margin_bottom">
-    <button id="duel_start" type="button" class="btn-lg btn-default">DuelStart</button>
-    <button id="hit" type="button" class="btn-lg btn-default">Hit</button>
-    <button id="stay" type="button" class="btn-lg btn-default">Stay</button>
-    <button id="treat1" type="button" class="btn-lg btn-default">1として扱う</button>
-    <button id="treat11" type="button" class="btn-lg btn-default">11として扱う</button>
+    <button id="duel_start" type="button" class="btn-lg btn-default gamestart">DuelStart</button>
+    <div class="center hided">
+      <img src="img/z01.png" alt="" class="dealer1" width="80" height="120">
+      <img src="img/z01.png" alt="" class="dealer2" width="80" height="120">
+      <img src="img/z01.png" alt="" class="dealer3 hided" width="80" height="120">
+      <img src="img/z01.png" alt="" class="dealer4 hided" width="80" height="120">
+      <img src="img/z01.png" alt="" class="dealer5 hided" width="80" height="120">
+     <h3 class="circle" id="dealer" style="margin-bottom: 100px;">0</h3>
+      <div class="margin_bottom side_display">
+        <h1 id="lose" class="hided">YOU LOSE</h1>
+        <h1 id="win" class="hided">YOU WIN</h1>
+        <h1 id="draw" class="hided">DRAW</h1>
+        <button id="restart" type="button" class="btn-lg btn-default hided">リトライ</button>
+        <img src="img/z01.png" alt="" class="deck" width="80" height="120">
+      </div>
+      <h3 class="circle" id="my">0</h3>
+      <div class="">
+        <img src="img/z01.png" alt="" class="my1" width="80" height="120">
+        <img src="img/z01.png" alt="" class="my2" width="80" height="120">
+        <img src="img/z01.png" alt="" class="my3 hided" width="80" height="120">
+        <img src="img/z01.png" alt="" class="my4 hided" width="80" height="120">
+        <img src="img/z01.png" alt="" class="my5 hided" width="80" height="120">
+        <img src="img/z01.png" alt="" class="my6 hided" width="80" height="120">
+        <img src="img/z01.png" alt="" class="my7 hided" width="80" height="120">
     </div>
-    <img src="img/z01.png" alt="" class="" width="120" height="180">
-    <script src="js/bootstrap.min.js"></script>
+      <div>
+        <button id="hit" type="button" class="btn-lg btn-default">Hit</button>
+        <button id="stay" type="button" class="btn-lg btn-default">Stay</button>
+      </div>
+      <script src="js/bootstrap.min.js"></script>
     </div>
   </body>
 </html>

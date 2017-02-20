@@ -7,16 +7,21 @@ window.app =
 
     @my_number = 0
     @dealer_number = 0
+    @add_mynumber = 3
+    @add_dealernumber = 3
+    #バーストフラグ
     @my_burst = 0
     @dealer_burst = 0
 
-    #スペード=1 クローバー=2 ハート=3 ダイヤ=4
+    #クローバー=1 ダイヤ=2 ハート=3 スペード=4
     @trump_number = new Array
     for i in [1..4]
       @trump_number[i] = [1..13]
     #1~10はそのままの値
     for i in [1..4]
       for j in [1..13]
+        if i is 1
+          @trump_number[i][j] = i
         @trump_number[i][j] = j
         #10~13の数はブラックジャックでは10と扱う
         if j >= 10
@@ -31,97 +36,95 @@ window.app =
       for j in [1..13]
         @check_trump_number[i][j] = 0
 
+  #クリックした時の動作
   setBind: ->
     $('#duel_start').on 'click', =>
-      @dealCard()
+      @duelStart()
     $('#hit').on 'click', =>
-      @addMyCard 'my'
+      @addMyCard "my#{@add_mynumber}"
+      @add_mynumber++
     $('#stay').on 'click', =>
       @battle @dealer_number, @my_number
 
-  dealCard: ->
-    @decideDealerNumber()
-    @decideMyNumber()
-
-  #ディーラーの初手のカードを決める
-  decideDealerNumber: ->
-    dealer_mark1 = _.random 1, 4
-    dealer_number1 = _.random 1, 13
-    #使用されていたらやり直し
-    while @check_trump_number[dealer_mark1][dealer_number1] is 1
-      dealer_mark1 = _.random 1, 4
-      dealer_number1 = _.random 1, 13
-    @check_trump_number[dealer_mark1][dealer_number1] = 1
-
-    dealer_mark2 = _.random 1, 4
-    dealer_number2 = _.random 1, 13
-    while @check_trump_number[dealer_mark2][dealer_number2] is 1
-      dealer_mark2 = _.random 1, 4
-      dealer_number2 = _.random 1, 13
-    @check_trump_number[dealer_mark2][dealer_number2] = 1
-
-    @dealer_number = @trump_number[dealer_mark1][dealer_number1] + @trump_number[dealer_mark2][dealer_number2]
+  #ゲーム開始
+  duelStart: ->
+    $('#duel_start').fadeOut 'normal'
+    $('.center').fadeIn 'normal'
+    @decideDealerNumber 'dealer1'
     console.log @dealer_number
-    while @dealer_number < 16
-      @addDealerCard()
-
-  #自分の初手のカードを決める
-  decideMyNumber: ->
-    my_mark1 = _.random 1, 4
-    my_number1 = _.random 1, 13
-    #使用されていたらやり直し
-    while @check_trump_number[my_mark1][my_number1] is 1
-      my_mark1 = _.random 1, 4
-      my_number1 = _.random 1, 13
-    @check_trump_number[my_mark1][my_number1] = 1
-
-    my_mark2 = _.random 1, 4
-    my_number2 = _.random 1, 13
-    while @check_trump_number[my_mark2][my_number2] is 1
-      my_mark2 = _.random 1, 4
-      my_number2 = _.random 1, 13
-    @check_trump_number[my_mark2][my_number2] = 1
-
-    @my_number = @trump_number[my_mark1][my_number1] + @trump_number[my_mark2][my_number2]
+    @decideMyNumber 'my1'
+    @decideMyNumber 'my2'
     console.log @my_number
 
-  #自分がカードをもう一枚引いたときの動作
-  addMyCard: ->
-    additional_mark = _.random 1, 4
-    additional_number = _.random 1, 13
-    while @check_trump_number[additional_mark][additional_number] is 1
-      additional_mark = _.random 1, 4
-      additional_number = _.random 1, 13
-    @check_trump_number[additional_mark][additional_number] = 1
-    @my_number = @my_number + @trump_number[additional_mark][additional_number]
+  #自分の始めのカードを決める
+  decideMyNumber: (who)->
+    mark = _.random 1, 4
+    number = _.random 1, 13
+    while @check_trump_number[mark][number] is 1
+      mark = _.random 1, 4
+      number = _.random 1, 13
+    @check_trump_number[mark][number] = 1
+    @my_number = @my_number + @trump_number[mark][number]
+    $("#my").text @my_number
+    $(".#{who}").attr 'src', "img/#{mark}_#{number}.png"
+
+  #ディーラーの始めのカードを決める
+  decideDealerNumber: (who)->
+    mark = _.random 1, 4
+    number = _.random 1, 13
+    while @check_trump_number[mark][number] is 1
+      mark = _.random 1, 4
+      number = _.random 1, 13
+    @check_trump_number[mark][number] = 1
+    @dealer_number = @dealer_number + @trump_number[mark][number]
+    $('#dealer').text '?'
+    $(".#{who}").attr 'src', "img/#{mark}_#{number}.png"
+
+  #自分がカードを引いたときの処理
+  addMyCard: (who)->
+    @decideMyNumber "my#{@add_mynumber}"
+    $(".#{who}").show 'normal'
     if @my_number > 21
       @my_burst = 1
     console.log @my_number
 
+  #ディーラーがカードを引いたときの処理
   addDealerCard: ->
-    additional_mark = _.random 1, 4
-    additional_number = _.random 1, 13
-    while @check_trump_number[additional_mark][additional_number] is 1
-      additional_mark = _.random 1, 4
-      additional_number = _.random 1, 13
-    @check_trump_number[additional_mark][additional_number] = 1
-    @dealer_number = @dealer_number + @trump_number[additional_mark][additional_number]
-    console.log @dealer_number
+    @decideDealerNumber "dealer#{@add_dealernumber}"
+    $(".dealer#{@add_dealernumber}").show 'normal'
     if @dealer_number > 21
       @dealer_burst = 1
+    @add_dealernumber++
+    console.log @dealer_number
 
+  #ディーラーがカードを加える
   battle: (dealer_number, mynumber)->
+    @decideDealerNumber 'dealer2'
+    while @dealer_number < 17
+      @addDealerCard()
+    $("#dealer").text @dealer_number
+    @judge()
+
+  #勝敗を判定
+  judge: ->
+    $('#restart').show 'slow'
     if @dealer_burst is 1 and @my_burst is 1
       console.log 'あなたの負けです！'
+      $('#lose').fadeIn 'fast'
     else if @dealer_burst is 1
       console.log 'あなたの勝ちです！'
+      $('#win').fadeIn 'fast'
     else if @my_burst is 1
       console.log 'あなたの負けです！'
+      $('#lose').fadeIn 'fast'
     else if @dealer_number is @my_number
       console.log '引き分けです。'
+      $('#draw').fadeIn 'fast'
     else if @dealer_number > @my_number
       console.log 'あなたの負けです！'
+      $('#lose').fadeIn 'fast'
     else
       console.log 'あなたの勝ちです！'
+      $('#win').fadeIn 'fast'
 
 
