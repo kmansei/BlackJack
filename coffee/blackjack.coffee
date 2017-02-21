@@ -2,11 +2,13 @@ $ ->
   app.initialize()
 
 window.app =
+  number:
+    'my': 0
+    'dealer': 0
+#使うときは console.log @number.my @number['my']
   initialize: ->
     @setBind()
 
-    @my_number = 0
-    @dealer_number = 0
     @add_mynumber = 3
     @add_dealernumber = 3
     #バーストフラグ
@@ -40,13 +42,14 @@ window.app =
 
   #クリックした時の動作
   setBind: ->
+
     $('#duel_start').on 'click', =>
       @duelStart()
     $('#hit').on 'click', =>
       @addMyCard "my#{@add_mynumber}"
       @add_mynumber++
     $('#stay').on 'click', =>
-      @battle @dealer_number, @my_number
+      @battle @number['dealer'], @number['my']
     $('#restart').on 'click', =>
       @restart()
 
@@ -54,59 +57,47 @@ window.app =
   duelStart: ->
     $('#duel_start').fadeOut 'normal'
     $('.center').fadeIn 'normal'
-    @decideDealerNumber 'dealer1'
-    console.log @dealer_number
-    @decideMyNumber 'my1'
-    @decideMyNumber 'my2'
-    console.log @my_number
+    @decideNumber 'dealer1', 'dealer'
+    console.log @number['dealer']
+    @decideNumber 'my1', 'my'
+    @decideNumber 'my2', 'my'
+    $('#dealer').text '?'
+    console.log @number['my']
 
   #自分の始めのカードを決める
-  decideMyNumber: (who)->
+  decideNumber: (who, player)->
     mark = number = 0
     while @check_trump_number[mark][number] is 1
       mark = _.random 1, 4
       number = _.random 1, 13
     @check_trump_number[mark][number] = 1
-    @my_number = @my_number + @trump_number[mark][number]
-    if number is 1 and @my_number > 21
-      @my_number = @my_number - 10
-    $("#my").text @my_number
-    $(".#{who}").attr 'src', "img/#{mark}_#{number}.png"
-
-  #ディーラーの始めのカードを決める
-  decideDealerNumber: (who)->
-    mark = number = 0
-    while @check_trump_number[mark][number] is 1
-      mark = _.random 1, 4
-      number = _.random 1, 13
-    @check_trump_number[mark][number] = 1
-    @dealer_number = @dealer_number + @trump_number[mark][number]
-    if number is 1 and @dealer_number > 21
-      @dealer_number = @dealer_number - 10
-    $('#dealer').text '?'
+    @number["#{player}"] = @number["#{player}"] + @trump_number[mark][number]
+    if number is 1 and @number["#{player}"] > 21
+      @number["#{player}"] = @number["#{player}"] - 10
+    $("##{player}").text @number["#{player}"]
     $(".#{who}").attr 'src', "img/#{mark}_#{number}.png"
 
   #自分がカードを引いたときの処理
   addMyCard: (who)->
-    @decideMyNumber "my#{@add_mynumber}"
+    @decideNumber "my#{@add_mynumber}", 'my'
     $(".#{who}").show 'normal'
-    if @my_number > 21
+    if @number['my'] > 21
       @my_burst = 1
       $("#hit").prop "disabled", true
       $('.burst1').fadeIn 'fast'
     @drawed()
-    console.log @my_number
+    console.log @number['my']
 
   #ディーラーがカードを引いたときの処理
   addDealerCard: ->
-    @decideDealerNumber "dealer#{@add_dealernumber}"
+    @decideNumber "dealer#{@add_dealernumber}", 'dealer'
     $(".dealer#{@add_dealernumber}").show 'normal'
-    if @dealer_number > 21
+    if @number['dealer'] > 21
       @dealer_burst = 1
       $('.burst2').fadeIn 'fast'
     @add_dealernumber++
     @drawed()
-    console.log @dealer_number
+    console.log @number['dealer']
 
   #山札からカードを引いたような演出
   drawed: ->
@@ -114,14 +105,14 @@ window.app =
       $('.deck').fadeIn 'fast'
 
   #ディーラーがカードを引く
-  battle: (dealer_number, mynumber)->
-    @decideDealerNumber 'dealer2'
+  battle: (dealernumber, mynumber)->
+    @decideNumber 'dealer2', 'dealer'
     $('.burst1').fadeOut 'fast'
-    while @dealer_number < 17
+    while @number['dealer'] < 17
       if @my_burst is 1
         break
       @addDealerCard()
-    $("#dealer").text @dealer_number
+    $("#dealer").text @number['dealer']
     @judge()
 
   #勝敗を判定
@@ -136,10 +127,10 @@ window.app =
     else if @my_burst is 1
       console.log 'あなたの負けです！'
       $('#lose').fadeIn 'fast'
-    else if @dealer_number is @my_number
+    else if @number['dealer'] is @number['my']
       console.log '引き分けです。'
       $('#draw').fadeIn 'fast'
-    else if @dealer_number > @my_number
+    else if @number['dealer'] > @number['my']
       console.log 'あなたの負けです！'
       $('#lose').fadeIn 'fast'
     else
@@ -157,8 +148,8 @@ window.app =
     $('#lose').fadeOut 'normal'
     $('#draw').fadeOut 'normal'
     $('.burst2').fadeOut 'normal'
-    @dealer_number = 0
-    @my_number = 0
+    @number['dealer'] = 0
+    @number['my'] = 0
     @add_mynumber = 3
     @add_dealernumber = 3
     @my_burst = 0
@@ -169,4 +160,5 @@ window.app =
     $('.dealer2').attr 'src', 'img/z02.png'
     $("#hit").prop "disabled", false
     @duelStart()
+
 

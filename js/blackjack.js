@@ -5,11 +5,13 @@
   });
 
   window.app = {
+    number: {
+      'my': 0,
+      'dealer': 0
+    },
     initialize: function() {
       var i, j, k, l, m, n, o, p;
       this.setBind();
-      this.my_number = 0;
-      this.dealer_number = 0;
       this.add_mynumber = 3;
       this.add_dealernumber = 3;
       this.my_burst = 0;
@@ -54,7 +56,7 @@
       })(this));
       $('#stay').on('click', (function(_this) {
         return function() {
-          return _this.battle(_this.dealer_number, _this.my_number);
+          return _this.battle(_this.number['dealer'], _this.number['my']);
         };
       })(this));
       return $('#restart').on('click', (function(_this) {
@@ -66,63 +68,49 @@
     duelStart: function() {
       $('#duel_start').fadeOut('normal');
       $('.center').fadeIn('normal');
-      this.decideDealerNumber('dealer1');
-      console.log(this.dealer_number);
-      this.decideMyNumber('my1');
-      this.decideMyNumber('my2');
-      return console.log(this.my_number);
-    },
-    decideMyNumber: function(who) {
-      var mark, number;
-      mark = number = 0;
-      while (this.check_trump_number[mark][number] === 1) {
-        mark = _.random(1, 4);
-        number = _.random(1, 13);
-      }
-      this.check_trump_number[mark][number] = 1;
-      this.my_number = this.my_number + this.trump_number[mark][number];
-      if (number === 1 && this.my_number > 21) {
-        this.my_number = this.my_number - 10;
-      }
-      $("#my").text(this.my_number);
-      return $("." + who).attr('src', "img/" + mark + "_" + number + ".png");
-    },
-    decideDealerNumber: function(who) {
-      var mark, number;
-      mark = number = 0;
-      while (this.check_trump_number[mark][number] === 1) {
-        mark = _.random(1, 4);
-        number = _.random(1, 13);
-      }
-      this.check_trump_number[mark][number] = 1;
-      this.dealer_number = this.dealer_number + this.trump_number[mark][number];
-      if (number === 1 && this.dealer_number > 21) {
-        this.dealer_number = this.dealer_number - 10;
-      }
+      this.decideNumber('dealer1', 'dealer');
+      console.log(this.number['dealer']);
+      this.decideNumber('my1', 'my');
+      this.decideNumber('my2', 'my');
       $('#dealer').text('?');
+      return console.log(this.number['my']);
+    },
+    decideNumber: function(who, player) {
+      var mark, number;
+      mark = number = 0;
+      while (this.check_trump_number[mark][number] === 1) {
+        mark = _.random(1, 4);
+        number = _.random(1, 13);
+      }
+      this.check_trump_number[mark][number] = 1;
+      this.number["" + player] = this.number["" + player] + this.trump_number[mark][number];
+      if (number === 1 && this.number["" + player] > 21) {
+        this.number["" + player] = this.number["" + player] - 10;
+      }
+      $("#" + player).text(this.number["" + player]);
       return $("." + who).attr('src', "img/" + mark + "_" + number + ".png");
     },
     addMyCard: function(who) {
-      this.decideMyNumber("my" + this.add_mynumber);
+      this.decideNumber("my" + this.add_mynumber, 'my');
       $("." + who).show('normal');
-      if (this.my_number > 21) {
+      if (this.number['my'] > 21) {
         this.my_burst = 1;
         $("#hit").prop("disabled", true);
         $('.burst1').fadeIn('fast');
       }
       this.drawed();
-      return console.log(this.my_number);
+      return console.log(this.number['my']);
     },
     addDealerCard: function() {
-      this.decideDealerNumber("dealer" + this.add_dealernumber);
+      this.decideNumber("dealer" + this.add_dealernumber, 'dealer');
       $(".dealer" + this.add_dealernumber).show('normal');
-      if (this.dealer_number > 21) {
+      if (this.number['dealer'] > 21) {
         this.dealer_burst = 1;
         $('.burst2').fadeIn('fast');
       }
       this.add_dealernumber++;
       this.drawed();
-      return console.log(this.dealer_number);
+      return console.log(this.number['dealer']);
     },
     drawed: function() {
       return $('.deck').fadeOut('fast', (function(_this) {
@@ -131,16 +119,16 @@
         };
       })(this));
     },
-    battle: function(dealer_number, mynumber) {
-      this.decideDealerNumber('dealer2');
+    battle: function(dealernumber, mynumber) {
+      this.decideNumber('dealer2', 'dealer');
       $('.burst1').fadeOut('fast');
-      while (this.dealer_number < 17) {
+      while (this.number['dealer'] < 17) {
         if (this.my_burst === 1) {
           break;
         }
         this.addDealerCard();
       }
-      $("#dealer").text(this.dealer_number);
+      $("#dealer").text(this.number['dealer']);
       return this.judge();
     },
     judge: function() {
@@ -154,10 +142,10 @@
       } else if (this.my_burst === 1) {
         console.log('あなたの負けです！');
         return $('#lose').fadeIn('fast');
-      } else if (this.dealer_number === this.my_number) {
+      } else if (this.number['dealer'] === this.number['my']) {
         console.log('引き分けです。');
         return $('#draw').fadeIn('fast');
-      } else if (this.dealer_number > this.my_number) {
+      } else if (this.number['dealer'] > this.number['my']) {
         console.log('あなたの負けです！');
         return $('#lose').fadeIn('fast');
       } else {
@@ -177,8 +165,8 @@
       $('#lose').fadeOut('normal');
       $('#draw').fadeOut('normal');
       $('.burst2').fadeOut('normal');
-      this.dealer_number = 0;
-      this.my_number = 0;
+      this.number['dealer'] = 0;
+      this.number['my'] = 0;
       this.add_mynumber = 3;
       this.add_dealernumber = 3;
       this.my_burst = 0;
