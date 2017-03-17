@@ -114,6 +114,8 @@ window.app =
       @addDealerCard()
     $("#dealer").text @number['dealer']
     @judge()
+    $('#hit').prop "disabled", true
+    $('#stay').prop "disabled", true
 
   #勝敗を判定
   judge: ->
@@ -159,6 +161,7 @@ window.app =
       $(".my#{i}").hide 'fast'
     $('.dealer2').attr 'src', 'img/z02.png'
     $("#hit").prop "disabled", false
+    $("#stay").prop "disabled", false
     @duelStart()
 
 

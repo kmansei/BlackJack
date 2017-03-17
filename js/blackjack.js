@@ -129,7 +129,9 @@
         this.addDealerCard();
       }
       $("#dealer").text(this.number['dealer']);
-      return this.judge();
+      this.judge();
+      $('#hit').prop("disabled", true);
+      return $('#stay').prop("disabled", true);
     },
     judge: function() {
       $('#restart').show('slow');
@@ -177,6 +179,7 @@
       }
       $('.dealer2').attr('src', 'img/z02.png');
       $("#hit").prop("disabled", false);
+      $("#stay").prop("disabled", false);
       return this.duelStart();
     }
   };
