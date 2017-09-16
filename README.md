@@ -1,6 +1,6 @@
 # BlackJack
 
-ブラックジャックです<br>
+インターンの課題で作ったブラックジャックです<br>
 https://black-jack-game.herokuapp.com/
 
 ## Description
